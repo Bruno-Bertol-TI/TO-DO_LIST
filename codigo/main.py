@@ -41,14 +41,14 @@ def add_tarefa():
         else:
             break
 
-# concluir tarefa em andamento
+# concluir tarefa concluida
 def concluir_tarefa():
 
     os.system('cls')
 
     if lista_tarefas:
+        print(f'| Cód | ......... nome .... status |')
         for i, lista in enumerate(lista_tarefas):
-            print(f'| Cód | ......... nome .... status |')
             for nome, status in lista.items():
                 print(f'|  {i} |   {nome}  |   {status} |')
     
@@ -60,8 +60,8 @@ def concluir_tarefa():
                      lista[nome] = 'concluida'
                 os.system('cls')
                 if lista_tarefas:
+                    print(f'| Cód | ......... nome .... status |')
                     for i, lista in enumerate(lista_tarefas):
-                        print(f'| Cód | ......... nome .... status |')
                         for nome, status in lista.items():
                             print(f'|  {i} |   {nome}  |   {status} |')
                     check_return_menu = input('|   press enter para seguir ao menu...')
@@ -75,24 +75,63 @@ def concluir_tarefa():
     else:
         print("| A lista de tarefas está vazia.")
 
+# remover tarefa concluida
+def remover_tarefa():
+    os.system('cls')
+
+    if lista_tarefas:
+        print(f'| Cód | ......... nome .... status |')
+        for i, lista in enumerate(lista_tarefas):
+            for nome, status in lista.items():
+                print(f'|  {i} |   {nome}  |   {status} |')
+    
+        try:
+            excluir = int(input('| Digite o numero da tarefa que deseja excluir: '))
+            if excluir >= 0 and excluir < len(lista_tarefas):
+                os.system('cls')
+                del lista_tarefas[excluir]
+                print(f'| lista')
+                if lista_tarefas:
+                    print(f'| Cód | ......... nome .... status |')
+                    for i, lista in enumerate(lista_tarefas):
+                        for nome, status in lista.items():
+                            print(f'|  {i} |   {nome}  |   {status} |')
+                    check_return_menu = input('|   press enter para seguir ao menu...')
+                    os.system('cls')   
+                    
+                else:
+                    print("| Número inválido. Por favor, digite um número correspondente a uma tarefa.")
+        except ValueError:
+                os.system('cls')
+                print(f'| O valor {excluir} esta invalido!')
+    else:
+        print("| A lista de tarefas está vazia.")
+
 # vizualizar_tarefa concluido
 def vizualizar_tarefa():
 
     os.system('cls')
 
     if lista_tarefas:
+        print(f'| Cód | ......... nome .... status |')
         for i, lista in enumerate(lista_tarefas):
-            print(f'| Cód | ......... nome .... status |')
             for nome, status in lista.items():
                 print(f'|  {i} |   {nome}  |   {status} |')
+        check_menu = input('| Pressione [enter] para retornar ao menu...')
+
+# funcao de encerramento concluida
+def encerrar_sistema():
+    print(f'|{tam}')
+    exit()
 
 while True:
 
     funcoes = {
-        '1': 'Adicionar Tarefa',
-        '2': 'Concluir Tarefa',
-        '3': 'Remover Tarefa',
-        '4': 'Vizualizar Tarefa'
+        '1': 'Adicionar Tarefa.',
+        '2': 'Concluir Tarefa.',
+        '3': 'Remover Tarefa.',
+        '4': 'Vizualizar Tarefa.',
+        '5': 'Encerrar sistema.'
     }
 
     print(f'|{tam}|')
@@ -111,11 +150,11 @@ while True:
     elif entrada == 2:
         concluir_tarefa() 
     elif entrada == 3:
-        # remover_tarefa()
-        ...
+         remover_tarefa()
     elif entrada == 4:
         vizualizar_tarefa()
-        continue
+    elif entrada == 5:
+        encerrar_sistema()
     else:
         os.system('cls')
         
