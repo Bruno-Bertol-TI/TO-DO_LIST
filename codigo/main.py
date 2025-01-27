@@ -1,153 +1,133 @@
 import os
+from pprint import pformat
 
+funcoes = {
+    '1': 'Adicionar Tarefa.',
+    '2': 'Concluir Tarefa.',
+    '3': 'Remover Tarefa.',
+    '4': 'Vizualizar Tarefa.',
+    '5': 'Encerrar sistema.'
+}
 tam = 30 * '-'
-tarefas = set()
-lista_tarefas = []
+tarefas = set() #lista 
+lista_tarefas = [] #lista fonte do armazenamento
 
+def pause():
+    click_enter = input('Pressione [ENTER] para seguir')
+    os.system('cls')
 
-# validar concluido
-def validar_tarefa(valid_list):
+def validar_tarefa(valid_list, adl_tarefa, adl_situacao):
         if valid_list not in tarefas:
             tarefas.add(valid_list)
-            lista_tarefas.append({valid_list: 'pendente'})
+            def atribuir_dados_lista():
+                lista_tarefas.append({'tarefa': adl_tarefa, 'situacao': adl_situacao})
             print(f'|{tam * 2}|')
             print(f'|     Sua tarefa foi adicionada.')
             print(f'|{tam * 2}|')
-
-
+            atribuir_dados_lista()
         else:
             os.system('cls')
             print(f'| Ops, a tarefa "{valid_list}" ja esta na lista de tarefas.')
 
-# add_tarefa concluido
 def add_tarefa():
         
+    os.system('cls')
     while True:
-
-        os.system('cls')
-
         print(f'|{tam}|')
         print(f'|     Adicione sua tarefa.     |')
         print(f'|{tam}|')
+        tarefa = input(f'|     Descreva a tarefa :  ' ).lower()
 
-        nova_tarefa = input(f'|     Descreva a tarefa :  ' ).lower()
-
-        validar_tarefa(nova_tarefa)
-
-        check_add_list = input('| Clique em qualquer tecla para sair... ou [C] para continuar: ').lower()
-
-        os.system('cls')
-        
-        if check_add_list.startswith('c'):
-            continue
-        else:
-            break
-
-# concluir tarefa concluida
-def concluir_tarefa():
-
-    os.system('cls')
-
-    if lista_tarefas:
-        print(f'| Cód | ......... nome .... status |')
-        for i, lista in enumerate(lista_tarefas):
-            for nome, status in lista.items():
-                print(f'|  {i} |   {nome}  |   {status} |')
-    
         while True:
-            concluir = int(input('| Digite o numero da tarefa que deseja concluir: '))
-            if concluir >= 0 and concluir < len(lista_tarefas):
-                lista = lista_tarefas[concluir]
-                for nome in lista:
-                     lista[nome] = 'concluida'
-                os.system('cls')
-                if lista_tarefas:
-                    print(f'| Cód | ......... nome .... status |')
-                    for i, lista in enumerate(lista_tarefas):
-                        for nome, status in lista.items():
-                            print(f'|  {i} |   {nome}  |   {status} |')
-                    check_return_menu = input('|   press enter para seguir ao menu...')
-                    os.system('cls') 
-                    break  
+            situacao = input(f'|     Descreva a situacao, [PENDENTE] ou  [CONCLUIDA]: ').lower()
+            if situacao.startswith('pendente') or situacao.startswith('concluido'):
+                validar_tarefa(tarefa, tarefa, situacao)
                 break
-                    
             else:
                 os.system('cls')
-                print("| Número inválido. Por favor, digite um número correspondente a uma tarefa.")
                 continue
-    else:
-        print("| A lista de tarefas está vazia.")
+        pause()
+        break
+    os.system('cls')
+        
+def concluir_tarefa():
+    os.system('cls')
+    vizualizar_tarefa()
+    
+    while True:
+        concluir = int(input('| Digite o numero da tarefa que deseja concluir: '))
+        if concluir >= 0 and concluir < len(lista_tarefas):
+            lista_tarefas[concluir]['situacao'] = 'concluida'
+            os.system('cls')
+            vizualizar_tarefa()
+            os.system('cls') 
+            break        
+        else:
+            os.system('cls')
+            print("| Número inválido. Por favor, digite um número correspondente a uma tarefa.")
+            continue
 
-# remover tarefa concluida
 def remover_tarefa():
     os.system('cls')
 
-    if lista_tarefas:
-        print(f'| Cód | ......... nome .... status |')
-        for i, lista in enumerate(lista_tarefas):
-            for nome, status in lista.items():
-                print(f'|  {i} |   {nome}  |   {status} |')
-    
-        while True:
-            excluir = int(input('| Digite o numero da tarefa que deseja excluir: '))
-            if excluir >= 0 and excluir < len(lista_tarefas):
-                os.system('cls')
-                del lista_tarefas[excluir]
-                print(f'| lista')
-                if lista_tarefas:
-                    print(f'| Cód | ......... nome .... status |')
-                    for i, lista in enumerate(lista_tarefas):
-                        for nome, status in lista.items():
-                            print(f'|  {i} |   {nome}  |   {status} |')
-                    check_return_menu = input('|   press enter para seguir ao menu...')
-                    os.system('cls')   
-                    break
-                break
-            else:
-                os.system('cls')
-                print("| Número inválido. Por favor, digite um número correspondente a uma tarefa.")
-                continue
+    vizualizar_tarefa()
+
+    if not lista_tarefas:
+        print("Não há tarefas para remover.")
+        return
+
+    excluir = input('| Digite o número da tarefa que deseja excluir: ')
+
+    if not excluir.strip():
+        print("| Entrada vazia. Por favor, digite um número válido.")
+        pause()
+        return
+
+    if not excluir.isdigit():
+        print("| Entrada inválida. Digite um número.")
+        pause()
+        return
+
+    excluir = int(excluir)
+
+    if 0 <= excluir < len(lista_tarefas):
+        tarefa_removida = lista_tarefas.pop(excluir)
+        print(f"Tarefa '{tarefa_removida['tarefa']}' removida com sucesso!")
     else:
-        print("| A lista de tarefas está vazia.")
+        print("| Tarefa inválida. Digite um número dentro da lista.")
+    pause()
 
-# vizualizar_tarefa concluido
 def vizualizar_tarefa():
-
     os.system('cls')
 
-    if lista_tarefas:
-        print(f'| Cód | ......... nome .... status |')
-        for i, lista in enumerate(lista_tarefas):
-            for nome, status in lista.items():
-                print(f'|  {i} |   {nome}  |   {status} |')
-        check_menu = input('| Pressione [enter] para retornar ao menu...')
-        os.system('cls')
+    vizualizar_lista_tarefas = [
+    {**tarefas_situacao, 'tarefa': tarefas_situacao['tarefa'], 'situacao': tarefas_situacao['situacao']}
+    for tarefas_situacao in lista_tarefas
+    ]
 
-# funcao de encerramento concluida
+    if not vizualizar_lista_tarefas:
+        print('Lista está vazia')
+    else:
+        for idx, i in enumerate(vizualizar_lista_tarefas):
+            lista_formatada_impressao = f'[{idx}] A tarefa: "{i["tarefa"]}" está {i["situacao"]}'
+            formatar = pformat(lista_formatada_impressao, width=65)
+            formatar_barras = '\n'.join(f'| {line} |' for line in formatar.splitlines())
+            print(formatar_barras)
+    pause()
+
 def encerrar_sistema():
     os.system('cls')
     exit()
 
 while True:
-
-    funcoes = {
-        '1': 'Adicionar Tarefa.',
-        '2': 'Concluir Tarefa.',
-        '3': 'Remover Tarefa.',
-        '4': 'Vizualizar Tarefa.',
-        '5': 'Encerrar sistema.'
-    }
-
     print(f'|{tam}|')
-
     for i in funcoes:
         print(f'| {i} | {funcoes.get(i)}')
-
     print(f'|{tam}|')
 
     entrada = input('| O que quer fazer agora? : ')
-    os.system('cls')
     entrada = int(entrada) if entrada.isdigit() else entrada
+    os.system('cls')
 
     if entrada == 1:
         add_tarefa() 
@@ -161,9 +141,8 @@ while True:
         encerrar_sistema()
     else:
         os.system('cls')
-        
-        print(f'Opção | {entrada} | não é permitida, tente novamente, mas desta vez, uma opção valida.')
-        print(f'{tam * 2}')
+        print(f'|{tam * 3}|')
+        print(f'| Opção | {entrada} | não é permitida, tente novamente, mas desta vez, uma opção valida.')
+        print(f'|{tam * 3}|')
         continue
-
     continue
